@@ -1,9 +1,0 @@
-{
-  "/page": "app/page.js",
-  "/not-found": "app/not-found.js",
-  "/login/page": "app/login/page.js",
-  "/report/page": "app/report/page.js",
-  "/issues/page": "app/issues/page.js",
-  "/emergency/page": "app/emergency/page.js",
-  "/dashboard/page": "app/dashboard/page.js"
-}

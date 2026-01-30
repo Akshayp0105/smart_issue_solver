@@ -20,7 +20,6 @@ import {
 import { AnimatedCard } from "@/components/ui/animated-card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
 
 import { db } from "@/lib/firebase"
 import {
@@ -93,7 +92,7 @@ export default function AdminPage() {
     }))
   }, [reports])
 
-  /* ---------- SAFE HELPERS ---------- */
+  /* ---------- HELPERS ---------- */
   const shortUser = (id?: string) =>
     id ? id.slice(0, 6) : "Unknown"
 
@@ -156,13 +155,14 @@ export default function AdminPage() {
                   </div>
                 </div>
 
+                {/* ✅ FIXED BADGE VARIANT */}
                 <Badge
                   variant={
                     r.status === "resolved"
                       ? "success"
                       : r.status === "urgent"
                       ? "destructive"
-                      : "open"
+                      : "secondary"
                   }
                 >
                   {r.status}
