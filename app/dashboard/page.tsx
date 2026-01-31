@@ -23,18 +23,13 @@ export default function DashboardPage() {
   const [userName, setUserName] = useState("Student")
 
   useEffect(() => {
-    if (!auth || !db) {
-      setLoading(false)
-      return
-    }
-
-    const unsub = onAuthStateChanged(auth, async (user) => {
+    const unsub = onAuthStateChanged(auth!, async (user) => {
       if (!user) {
         setLoading(false)
         return
       }
 
-      // Get user's display name
+      // Set user name
       if (user.displayName) {
         setUserName(user.displayName)
       } else if (user.email) {
@@ -43,7 +38,7 @@ export default function DashboardPage() {
 
       try {
         const q = query(
-          collection(db, "reports"),
+          collection(db!, "reports"),
           where("userId", "==", user.uid)
         )
 
@@ -60,9 +55,8 @@ export default function DashboardPage() {
           }
         })
 
-        // SORT LOCALLY (no index needed)
+        // sort newest first
         data.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
-
         setReports(data)
       } catch (e) {
         console.error("Dashboard fetch failed:", e)
@@ -74,9 +68,11 @@ export default function DashboardPage() {
     return () => unsub()
   }, [])
 
-  const active = reports.filter(r => r.status === "open" || r.status === "in-progress").length
-  const pending = reports.filter(r => r.status === "pending").length
-  const resolved = reports.filter(r => r.status === "resolved").length
+  const active = reports.filter(
+    (r) => r.status === "open" || r.status === "in-progress"
+  ).length
+  const pending = reports.filter((r) => r.status === "pending").length
+  const resolved = reports.filter((r) => r.status === "resolved").length
 
   return (
     <div className="p-8 max-w-5xl mx-auto">
@@ -143,14 +139,15 @@ export default function DashboardPage() {
         {loading && <p className="text-sm text-neutral-500">Loading…</p>}
 
         {!loading && reports.length === 0 && (
-          <p className="text-sm text-neutral-500">
-            No issues reported yet.
-          </p>
+          <p className="text-sm text-neutral-500">No issues reported yet.</p>
         )}
 
         <div className="divide-y divide-neutral-200">
           {reports.slice(0, 5).map((r) => (
-            <div key={r.id} className="py-4 flex justify-between items-center group">
+            <div
+              key={r.id}
+              className="py-4 flex justify-between items-center group"
+            >
               <div className="flex items-baseline gap-4">
                 <span className="font-mono text-xs text-neutral-400">
                   #{r.id.slice(0, 4)}
