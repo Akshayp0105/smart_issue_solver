@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 
 import { Button } from "@/components/ui/button"
@@ -12,20 +12,39 @@ import { ArrowLeft } from "lucide-react"
 import { auth } from "@/lib/firebase"
 import {
   GoogleAuthProvider,
-  signInWithPopup,
+  signInWithRedirect,
   signInWithEmailAndPassword,
+  getRedirectResult,
 } from "firebase/auth"
 
 export default function LoginPage() {
   const router = useRouter()
-  const provider = new GoogleAuthProvider()
 
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [loading, setLoading] = useState(false)
 
+  // Handle redirect result from Google Sign-In
+  useEffect(() => {
+    if (!auth) return
+
+    getRedirectResult(auth)
+      .then((result) => {
+        if (result?.user) {
+          router.push("/dashboard")
+        }
+      })
+      .catch((error) => {
+        console.error("Redirect error:", error)
+      })
+  }, [router])
+
   // EMAIL + PASSWORD LOGIN
   const handleEmailLogin = async () => {
+    if (!auth) {
+      alert("Authentication not initialized")
+      return
+    }
     try {
       setLoading(true)
       await signInWithEmailAndPassword(auth, email, password)
@@ -39,9 +58,13 @@ export default function LoginPage() {
 
   // GOOGLE LOGIN
   const handleGoogleLogin = async () => {
+    if (!auth) {
+      alert("Authentication not initialized")
+      return
+    }
     try {
-      await signInWithPopup(auth, provider)
-      router.push("/dashboard")
+      const provider = new GoogleAuthProvider()
+      await signInWithRedirect(auth, provider)
     } catch (error: any) {
       alert(error.message)
     }

@@ -16,15 +16,12 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { cn } from "@/lib/utils"
 
-import { auth } from "@/lib/firebase"
+import { auth, db } from "@/lib/firebase"
 import {
-  getFirestore,
   collection,
   addDoc,
   serverTimestamp,
 } from "firebase/firestore"
-
-const db = getFirestore()
 
 const STEPS = [
   { id: "category", title: "What type of issue is this?", icon: Tag },
@@ -82,6 +79,11 @@ export function ReportWizard() {
     setCurrentStep((p) => Math.max(p - 1, 0))
 
   async function submitReport() {
+    if (!auth || !db) {
+      alert("Firebase not initialized")
+      return
+    }
+
     try {
       setSubmitting(true)
 

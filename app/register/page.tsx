@@ -21,6 +21,10 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false)
 
   const handleRegister = async () => {
+    if (!auth) {
+      alert("Authentication not initialized")
+      return
+    }
     try {
       setLoading(true)
 

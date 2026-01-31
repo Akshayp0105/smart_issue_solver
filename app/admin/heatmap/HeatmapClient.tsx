@@ -29,6 +29,8 @@ export default function HeatmapClient() {
     }).addTo(map);
 
     const loadHeatmap = async () => {
+      if (!db) return;
+
       const snap = await getDocs(collection(db, "reports"));
       const heatPoints: [number, number, number][] = [];
 

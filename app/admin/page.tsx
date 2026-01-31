@@ -48,6 +48,11 @@ export default function AdminPage() {
   /* ---------- FETCH DATA ---------- */
   useEffect(() => {
     const fetchReports = async () => {
+      if (!db) {
+        setLoading(false)
+        return
+      }
+
       const snap = await getDocs(collection(db, "reports"))
       const data = snap.docs.map(doc => ({
         id: doc.id,
