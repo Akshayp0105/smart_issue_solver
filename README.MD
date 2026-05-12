@@ -1,2 +1,2 @@
 ##SMART ISSUE SOLVER
-A perfect solution 
+A perfect solution  for problems 
